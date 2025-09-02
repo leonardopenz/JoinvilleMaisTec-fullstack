@@ -24,7 +24,6 @@ public class AcaoSustentavelController {
     @Autowired
     private ModelMapper modelMapper;
 
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping
     public ResponseEntity<List<AcaoSustentavelResponse>> listAll(){
         List<AcaoSustentavelResponse> acoes = this.acaoSustentavelService.findAllAcaoSustentavel().stream()
@@ -32,7 +31,7 @@ public class AcaoSustentavelController {
         return acoes.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(acoes);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/acoes/{id}")
     public ResponseEntity<AcaoSustentavelResponse> listOne(@PathVariable Long id){
         Optional<AcaoSustentavel> optionalAcao = Optional.ofNullable(acaoSustentavelService.findAcaoById(id));
 
@@ -44,7 +43,6 @@ public class AcaoSustentavelController {
         }
     }
 
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/categoria")
     public ResponseEntity<List<AcaoSustentavelResponse>> listarPorCategoria(@RequestParam("tipo") String tipo) {
         try {
@@ -62,8 +60,7 @@ public class AcaoSustentavelController {
         }
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping
+    @PostMapping("/acoes")
     public ResponseEntity<AcaoSustentavelResponse> create(@RequestBody @Valid AcaoSustentavelRequest acaoDTO) throws Exception {
         AcaoSustentavel acao = modelMapper.map(acaoDTO, AcaoSustentavel.class);
         AcaoSustentavel createdAcao = this.acaoSustentavelService.create(acao);
@@ -71,8 +68,7 @@ public class AcaoSustentavelController {
         return ResponseEntity.ok(createdAcaoDTO);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/{id}")
+    @PutMapping("/acoes/{id}")
     public ResponseEntity<AcaoSustentavelResponse> update(@PathVariable Long id, @RequestBody AcaoSustentavelRequest acaoDTO) throws Exception {
         AcaoSustentavel acao = modelMapper.map(acaoDTO, AcaoSustentavel.class);
         AcaoSustentavel updateAcao = this.acaoSustentavelService.update(id, acao);
@@ -80,8 +76,7 @@ public class AcaoSustentavelController {
         return ResponseEntity.ok(updateAcaoDTO);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/acoes/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id){
         this.acaoSustentavelService.delete(id);
         return ResponseEntity.ok("Ação Sustentável removida com suceso!");
